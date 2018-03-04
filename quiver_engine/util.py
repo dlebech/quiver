@@ -48,7 +48,22 @@ def decode_predictions(preds, classes, top):
         print("Warning! you didn't pass your own set of classes for the model therefore imagenet classes are used")
         return decode_imagenet_predictions(preds, top)
 
-    if len(preds.shape) != 2 or preds.shape[1] != len(classes):
+    if len(preds.shape) != 2:
+        raise ValueError('prediction output has wrong shape')
+
+    # Binary classification gets special treatment. It is assumed that the
+    # outputs are 0 or 1.
+    if preds.shape[1] == 1 and len(classes) == 2:
+        return [
+            [
+                ("", classes[0], 1-pred[0]),
+                ("", classes[1], pred[0])
+            ]
+            for pred in preds
+        ]
+
+    # Multi-label classification
+    if preds.shape[1] != len(classes):
         raise ValueError('you need to provide same number of classes as model prediction output ' + \
                          'model returns %s predictions, while there are %s classes' % (
                              preds.shape[1], len(classes)))
