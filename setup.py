@@ -21,7 +21,7 @@ setup(
     package_dir={'quiver_engine': 'quiver_engine'},
     package_data={'quiver_engine': ['quiverboard/dist/*']},
     install_requires=[
-        'keras',
+        'imageio',
         'flask',
         'flask_cors',
         'gevent',

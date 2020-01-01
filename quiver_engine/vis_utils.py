@@ -1,8 +1,10 @@
 import numpy as np
-import keras.backend as K
+import tensorflow as tf
 from quiver_engine.util import get_evaluation_context
 from quiver_engine.file_utils import save_layer_img
 from quiver_engine.layer_result_generators import get_outputs_generator
+
+K = tf.keras.backend
 
 def save_layer_outputs(input_img, model, layer_name, temp_folder, input_path):
 

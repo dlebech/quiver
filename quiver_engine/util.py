@@ -2,11 +2,12 @@ from __future__ import absolute_import, division, print_function
 import json
 from flask.json import jsonify
 import numpy as np
-from keras.preprocessing import image
-import keras.backend as K
+import tensorflow as tf
 from contextlib import contextmanager
 from quiver_engine.imagenet_utils import preprocess_input, decode_imagenet_predictions
 from os import path
+
+image = tf.keras.preprocessing.image
 
 
 def validate_launch(html_base_dir):
@@ -22,12 +23,8 @@ def get_evaluation_context():
     return get_evaluation_context_getter()()
 
 def get_evaluation_context_getter():
-    if K.backend() == 'tensorflow':
-        import tensorflow as tf
-        return tf.get_default_graph().as_default
-
-    if K.backend() == 'theano':
-        return contextmanager(lambda: (yield))
+    import tensorflow as tf
+    return tf.get_default_graph().as_default
 
 def get_input_config(model):
     '''
@@ -35,9 +32,6 @@ def get_input_config(model):
     '''
 
     return (
-        model.get_input_shape_at(0)[2:4],
-        model.get_input_shape_at(0)[1]
-    ) if K.image_dim_ordering() == 'th' else (
         #tf ordering
         model.get_input_shape_at(0)[1:3],
         model.get_input_shape_at(0)[3]

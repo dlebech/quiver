@@ -6,17 +6,14 @@ from __future__ import absolute_import, division, print_function
 
 import json
 
-from keras.utils.data_utils import get_file
-from keras import backend as K
 import numpy as np
+import tensorflow as tf
 
 CLASS_INDEX = None
 CLASS_INDEX_PATH = 'https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json'
 
 
-def preprocess_input(x, dim_ordering='default', mean=None, std=None):
-    if dim_ordering == 'default':
-        dim_ordering = K.image_dim_ordering()
+def preprocess_input(x, dim_ordering='tf', mean=None, std=None):
     assert dim_ordering in {'tf', 'th'}
 
     if mean is not None:
@@ -50,7 +47,7 @@ def decode_imagenet_predictions(preds, top=5):
                          '(i.e. a 2D array of shape (samples, 1000)). '
                          'Found array with shape: ' + str(preds.shape))
     if CLASS_INDEX is None:
-        fpath = get_file('imagenet_class_index.json',
+        fpath = tf.keras.utils.data_utils.get_file('imagenet_class_index.json',
                          CLASS_INDEX_PATH,
                          cache_subdir='models')
         CLASS_INDEX = json.load(open(fpath))
